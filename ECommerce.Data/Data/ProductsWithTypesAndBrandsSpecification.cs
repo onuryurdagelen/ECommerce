@@ -17,26 +17,26 @@ namespace ECommerce.Data.Data
             AddInclude(p => p.ProductBrand);
 
         }
-        public ProductsWithTypesAndBrandsSpecification(int skip,int take)
-        {
-            AddInclude(p => p.ProductType);
-            AddInclude(p => p.ProductBrand);
-            ApplyPaging(skip, take);
-        }
-        public ProductsWithTypesAndBrandsSpecification(string sort,int? brandId,int? typeId)
+       
+        public ProductsWithTypesAndBrandsSpecification(ProductSpecParams productSpecParams)
             :base(
                    x => 
-                    (!brandId.HasValue || x.ProductBrandId == brandId) &&
-                    (!typeId.HasValue || x.ProductBrandId == typeId)
+                    (string.IsNullOrEmpty(productSpecParams.Search) || x.Name.ToLower().Contains(productSpecParams.Search)) && 
+                    (!productSpecParams.Price.HasValue || x.Price <= productSpecParams.Price) &&
+                    (!productSpecParams.BrandId.HasValue || x.ProductBrandId == productSpecParams.BrandId) &&
+                    (!productSpecParams.TypeId.HasValue || x.ProductBrandId == productSpecParams.TypeId)
                  )
         {
             AddInclude(p => p.ProductType);
             AddInclude(p => p.ProductBrand);
             AddOrderBy(x => x.Name);
+            ApplyPaging(productSpecParams.PageSize * (productSpecParams.PageIndex - 1), productSpecParams.PageSize);
+            
 
-            if(!string.IsNullOrEmpty(sort))
+
+            if(!string.IsNullOrEmpty(productSpecParams.Sort))
             {
-                switch (sort)
+                switch (productSpecParams.Sort)
                 {
                     case "priceAsc":
                         AddOrderBy(p => p.Price);

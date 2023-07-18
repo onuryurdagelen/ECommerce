@@ -46,23 +46,23 @@ namespace ECommerce.API.Controllers
 
         //}
         [HttpGet("getProductsBySpecification")]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByOrderSpecification(string order,int? brandId,int? typeId)
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByOrderSpecification([FromQuery]ProductSpecParams productParams)
         {
-            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(order,brandId,typeId));
+            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(productParams));
             return Ok(_mapper.Map<IReadOnlyList<Product>,
                                   IReadOnlyList<ProductToReturnDto
                                   >>(spec.ToList()));
 
         }
-        [HttpGet("getProductsByPaging")]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByOrderSpecification(int skip = 0, int take = 5)
-        {
-            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(skip,take));
-            return Ok(_mapper.Map<IReadOnlyList<Product>,
-                                  IReadOnlyList<ProductToReturnDto
-                                  >>(spec.ToList()));
+        //[HttpGet("getProductsByPaging")]
+        //public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByPaging(ProductSpecParams productParams)
+        //{
+        //    IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(skip,take));
+        //    return Ok(_mapper.Map<IReadOnlyList<Product>,
+        //                          IReadOnlyList<ProductToReturnDto
+        //                          >>(spec.ToList()));
 
-        }
+        //}
         [HttpGet("activeProducts")]
         public async Task<ActionResult<List<Product>>> GetActiveProducts()
         {
