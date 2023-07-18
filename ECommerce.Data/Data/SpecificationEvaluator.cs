@@ -20,6 +20,18 @@ namespace ECommerce.Data.Data
             {
                 query = query.Where(spec.Criteria);
             }
+
+            if (spec.Skip >= 0)
+                query = query.Skip(spec.Skip * spec.Take);
+
+            if(spec.Take >= 0)
+                query = query.Take(spec.Take);
+
+            if(spec.OrderBy != null)
+                query = query.OrderBy(spec.OrderBy);
+            if(spec.OrderByDescending != null)
+                query = query.OrderByDescending(spec.OrderByDescending);
+
             if(spec.Includes.Count > 0)
                 query = spec.Includes.Aggregate(query,(current,include) => current.Include(include));
 

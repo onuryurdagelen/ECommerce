@@ -12,7 +12,7 @@ namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseApiController
     {
         //private readonly IProductRepository _productRepository;
         private readonly IGenericRepository<Product> _productRepository;
@@ -36,10 +36,28 @@ namespace ECommerce.API.Controllers
             return Ok(await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification()));
 
         }
+        //[HttpGet("getProductsBySpecification")]
+        //public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsBySpecification()
+        //{
+        //    IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification());
+        //    return Ok(_mapper.Map<IReadOnlyList<Product>,
+        //                          IReadOnlyList<ProductToReturnDto
+        //                          >>(spec.ToList()));
+
+        //}
         [HttpGet("getProductsBySpecification")]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsBySpecification()
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByOrderSpecification(string order,int? brandId,int? typeId)
         {
-            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification());
+            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(order,brandId,typeId));
+            return Ok(_mapper.Map<IReadOnlyList<Product>,
+                                  IReadOnlyList<ProductToReturnDto
+                                  >>(spec.ToList()));
+
+        }
+        [HttpGet("getProductsByPaging")]
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByOrderSpecification(int skip = 0, int take = 5)
+        {
+            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(skip,take));
             return Ok(_mapper.Map<IReadOnlyList<Product>,
                                   IReadOnlyList<ProductToReturnDto
                                   >>(spec.ToList()));
