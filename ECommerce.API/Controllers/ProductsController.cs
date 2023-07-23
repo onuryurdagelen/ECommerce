@@ -31,11 +31,6 @@ namespace ECommerce.API.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
-        {
-            return Ok(await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification()));
-
-        }
         //[HttpGet("getProductsBySpecification")]
         //public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsBySpecification()
         //{
@@ -45,13 +40,23 @@ namespace ECommerce.API.Controllers
         //                          >>(spec.ToList()));
 
         //}
-        [HttpGet("getProductsBySpecification")]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProductsByOrderSpecification([FromQuery]ProductSpecParams productParams)
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParams productParams)
         {
             IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(productParams));
-            return Ok(_mapper.Map<IReadOnlyList<Product>,
+
+            IReadOnlyList<ProductToReturnDto> mappedProducts =_mapper.Map<IReadOnlyList<Product>,
                                   IReadOnlyList<ProductToReturnDto
-                                  >>(spec.ToList()));
+                                  >>(spec.ToList());
+
+            Pagination<List<ProductToReturnDto>> products = new Pagination<List<ProductToReturnDto>>()
+            {
+                Count = spec.Count,
+                Data = mappedProducts.ToList(),
+                PageIndex = productParams.PageIndex,
+                PageSize = productParams.PageSize,  
+            };
+
+            return Ok(products);
 
         }
         //[HttpGet("getProductsByPaging")]

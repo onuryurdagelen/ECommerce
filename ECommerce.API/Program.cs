@@ -1,4 +1,4 @@
-using ECommerce.API;
+﻿using ECommerce.API;
 using ECommerce.Data;
 using ECommerce.Data.Data;
 using ECommerce.Data.Extensions;
@@ -22,6 +22,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApiServices();
 builder.Services.AddDataServices();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Angular_Policy", builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        ;
+    });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
@@ -37,6 +49,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Angular_Policy");
 app.UseStaticFiles();
 
 app.UseAuthorization();

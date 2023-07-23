@@ -12,6 +12,11 @@ namespace ECommerce.API
     {
         public static void AddApiServices(this IServiceCollection services)
         {
+             services.AddControllers()
+            .AddJsonOptions(options =>
+                {
+                  options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
+                });
             services.AddDbContext<StoreContext>(opt =>
             {
                 opt.UseSqlServer(AppSettingsExtension.GetConnectionString("MSSQL"));
