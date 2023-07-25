@@ -16,6 +16,7 @@ namespace ECommerce.Data.Abstracts
         Task<IReadOnlyCollection<T>> FindAsync(Expression<Func<T, bool>> predicate);
         Task<IReadOnlyList<T>> GetAllAsync();
         Task<T> GetEntityWithSpec(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> spec);
         Task<IReadOnlyCollection<T>> ListAsync(ISpecification<T> spec);
         void Add(T entity);
         void Update(T entity); 

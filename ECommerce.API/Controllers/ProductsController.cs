@@ -42,21 +42,29 @@ namespace ECommerce.API.Controllers
         //}
         public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParams productParams)
         {
-            IReadOnlyCollection<Product> spec = await _productRepository.ListAsync(new ProductsWithTypesAndBrandsSpecification(productParams));
+
+            ProductsWithTypesAndBrandsSpecification spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+            
+            ProductWithFiltersForCountSpecification countSpec = new ProductWithFiltersForCountSpecification(productParams);
+
+            var totalItems = await _productRepository.CountAsync(countSpec);
+
+            IReadOnlyCollection<Product> products = await _productRepository.ListAsync(spec);
+
 
             IReadOnlyList<ProductToReturnDto> mappedProducts =_mapper.Map<IReadOnlyList<Product>,
                                   IReadOnlyList<ProductToReturnDto
-                                  >>(spec.ToList());
+                                  >>(products.ToList());
 
-            Pagination<List<ProductToReturnDto>> products = new Pagination<List<ProductToReturnDto>>()
+            Pagination<List<ProductToReturnDto>> data = new Pagination<List<ProductToReturnDto>>()
             {
-                Count = spec.Count,
+                Count = totalItems,
                 Data = mappedProducts.ToList(),
                 PageIndex = productParams.PageIndex,
                 PageSize = productParams.PageSize,  
             };
 
-            return Ok(products);
+            return Ok(data);
 
         }
         //[HttpGet("getProductsByPaging")]

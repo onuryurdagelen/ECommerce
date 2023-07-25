@@ -68,5 +68,10 @@ namespace ECommerce.Data.Concretes
         {
             _table.Update(entity);
         }
+
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+           return await ApplySpecification(spec).CountAsync();
+        }
     }
 }
