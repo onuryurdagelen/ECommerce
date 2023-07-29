@@ -41,10 +41,10 @@ namespace ECommerce.API.Controllers
 
         //}
         public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParams productParams)
-        {
+       {
 
             ProductsWithTypesAndBrandsSpecification spec = new ProductsWithTypesAndBrandsSpecification(productParams);
-            
+
             ProductWithFiltersForCountSpecification countSpec = new ProductWithFiltersForCountSpecification(productParams);
 
             var totalItems = await _productRepository.CountAsync(countSpec);

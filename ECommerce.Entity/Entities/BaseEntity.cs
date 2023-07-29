@@ -12,9 +12,9 @@ namespace ECommerce.API.Entities
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public int ActiveFlag { get; set; }
+        public int ActiveFlag { get; set; } = 1;
 
         [NotMapped]
-        public string ActiveStatusText => ActiveFlag == 0 ? "Active" : "Inactive";
+        public string ActiveStatusText => ActiveFlag == 1 ? "Active" : "Passive";
     }
 }

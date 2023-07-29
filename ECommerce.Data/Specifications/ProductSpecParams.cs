@@ -24,7 +24,7 @@ namespace ECommerce.Data.Specifications
         public string? Search { 
             get => _search; 
             
-            set => _search = value.ToLower(); 
+            set => _search = value == null ? "" : value.Trim().ToLower(); 
         }
         private decimal? _price;
         public decimal? Price { 

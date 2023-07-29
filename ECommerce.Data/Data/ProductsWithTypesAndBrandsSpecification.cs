@@ -24,7 +24,7 @@ namespace ECommerce.Data.Data
                     (string.IsNullOrEmpty(productSpecParams.Search) || x.Name.ToLower().Contains(productSpecParams.Search)) && 
                     (!productSpecParams.Price.HasValue || x.Price <= productSpecParams.Price) &&
                     (!productSpecParams.BrandId.HasValue || x.ProductBrandId == productSpecParams.BrandId) &&
-                    (!productSpecParams.TypeId.HasValue || x.ProductBrandId == productSpecParams.TypeId)
+                    (!productSpecParams.TypeId.HasValue || x.ProductTypeId == productSpecParams.TypeId)
                  )
         {
             AddInclude(p => p.ProductType);
