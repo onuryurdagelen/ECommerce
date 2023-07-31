@@ -10,7 +10,7 @@ namespace ECommerce.Data.Abstracts
     public interface IProductRepository: IGenericRepository<Product>
     {
         Task<IReadOnlyList<ProductBrand>> GetProductBrandsAsync();
-
+        Task<Product> GetProductById(int id);
         Task<IReadOnlyList<ProductType>> GetProductTypesAsync();
         Task<IReadOnlyCollection<Product>> GetProductsAsync();
      }

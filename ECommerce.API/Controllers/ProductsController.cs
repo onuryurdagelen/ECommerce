@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerce.API.Entities;
 using ECommerce.Data.Abstracts;
+using ECommerce.Data.Concretes;
 using ECommerce.Data.Data;
 using ECommerce.Data.Dtos;
 using ECommerce.Data.Specifications;
@@ -12,22 +13,24 @@ namespace ECommerce.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : BaseApiController
+    public class ProductsController : BuggyController
     {
-        //private readonly IProductRepository _productRepository;
-        private readonly IGenericRepository<Product> _productRepository;
-        private readonly IGenericRepository<ProductBrand> _productBrandRepository;
-        private readonly IGenericRepository<ProductType> _productTypeRepository;
+        private readonly IGenericRepository<Product> _GproductRepository;
+        private readonly IProductRepository _productRepository;
+        private readonly IGenericRepository<ProductBrand> _GproductBrandRepository;
+        private readonly IGenericRepository<ProductType> _GproductTypeRepository;
         private readonly IMapper _mapper;
         public ProductsController(
-            IGenericRepository<Product> productRepository,
-            IGenericRepository<ProductBrand> productBrandRepository,
-            IGenericRepository<ProductType> productTypeRepository
+            IProductRepository productRepository,
+            IGenericRepository<Product> GproductRepository,
+            IGenericRepository<ProductBrand> GproductBrandRepository,
+            IGenericRepository<ProductType> GproductTypeRepository
 ,           IMapper mapper)
         {
             _productRepository = productRepository;
-            _productBrandRepository = productBrandRepository;
-            _productTypeRepository = productTypeRepository;
+            _GproductRepository = GproductRepository;
+            _GproductBrandRepository = GproductBrandRepository;
+            _GproductTypeRepository = GproductTypeRepository;
             _mapper = mapper;
         }
         [HttpGet]
@@ -83,12 +86,16 @@ namespace ECommerce.API.Controllers
 
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id) 
+        public async Task<IActionResult> GetProduct(int id) 
         {
-            return Ok(await _productRepository.GetByIdAsync(id));
+            Product product = await _productRepository.GetProductById(id);
+            if(product == null)
+                return GetNotFoundRequest();
+            ProductToReturnDto productToReturnDto = _mapper.Map<Product, ProductToReturnDto>(product);
+            return Ok(productToReturnDto);
         }
         [HttpGet("specification/{id}")]
-        public async Task<ActionResult<Product>> GetProductBySpec(int id)
+        public async Task<IActionResult> GetProductBySpec(int id)
         {
             ProductsWithTypesAndBrandsSpecification spec = new ProductsWithTypesAndBrandsSpecification(p => p.Id == id);
             Product product = await _productRepository.GetEntityWithSpec(spec);
@@ -98,12 +105,12 @@ namespace ECommerce.API.Controllers
         [HttpGet("brands")]
         public async Task<ActionResult<List<ProductBrand>>> GetProductBrands()
         {
-            return Ok(await _productBrandRepository.GetAllAsync());
+            return Ok(await _GproductBrandRepository.GetAllAsync());
         }
         [HttpGet("types")]
         public async Task<ActionResult<List<ProductType>>> GetProductTypes()
         {
-            return Ok(await _productTypeRepository.GetAllAsync());
+            return Ok(await _GproductTypeRepository.GetAllAsync());
         }
     }
 }

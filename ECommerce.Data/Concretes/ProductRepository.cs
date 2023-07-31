@@ -24,6 +24,14 @@ namespace ECommerce.Data.Concretes
             return await _context.ProductBrands.ToListAsync();
         }
 
+        public async Task<Product> GetProductById(int id)
+        {
+           return await _context.Products
+                .Include(x => x.ProductType)
+                .Include(x => x.ProductBrand)
+                .Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
         public async Task<IReadOnlyCollection<Product>> GetProductsAsync()
         {
             return await _context.Products
