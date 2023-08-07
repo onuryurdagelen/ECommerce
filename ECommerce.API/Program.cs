@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 
 
 //Implementation Service Registrations
-builder.Services.AddApiServices();
+builder.Services.AddApiServices(builder.Configuration);
 builder.Services.AddDataServices();
 
 builder.Services.AddCors(options =>

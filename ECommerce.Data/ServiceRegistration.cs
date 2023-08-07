@@ -15,6 +15,7 @@ namespace ECommerce.Data
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             //services.AddScoped<IProductRepository,ProductRepository>();
 

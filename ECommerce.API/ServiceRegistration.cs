@@ -5,13 +5,17 @@ using ECommerce.Data.Extensions;
 using ECommerce.Data.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace ECommerce.API
 {
     public static class ServiceRegistration
     {
-        public static void AddApiServices(this IServiceCollection services)
+        public static void AddApiServices(this IServiceCollection services,ConfigurationManager config)
         {
+
+
+            
              services.AddControllers()
             .AddJsonOptions(options =>
                 {
@@ -20,6 +24,11 @@ namespace ECommerce.API
             services.AddDbContext<StoreContext>(opt =>
             {
                 opt.UseSqlServer(AppSettingsExtension.GetConnectionString("MSSQL"));
+            });
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+                ConfigurationOptions options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(options);
             });
             services.Configure<ApiBehaviorOptions>(options =>
             {

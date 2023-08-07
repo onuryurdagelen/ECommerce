@@ -1,4 +1,5 @@
-﻿using ECommerce.Data.Response;
+﻿using ECommerce.Data.Abstracts;
+using ECommerce.Data.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,6 @@ namespace ECommerce.API.Controllers
     [ApiController]
     public class BaseApiController : ControllerBase
     {
-       
+        
     }
 }
