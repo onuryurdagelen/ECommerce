@@ -12,5 +12,6 @@ namespace ECommerce.Data.Abstracts
         Task<Basket> GetBasketAsync(string basketId);
         Task<Basket> UpdateBasketAsync(Basket basket);
         Task<bool> DeleteBasketAsync(string basketId);
+        Task<bool> DeleteBasketItemAsync(string basketId,int id);
     }
 }

@@ -31,11 +31,20 @@ namespace ECommerce.API.Controllers
             return Ok(updatedBasket);
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteBasketAsync(string id)
+        public async Task<IActionResult> DeleteBasketAsync(string basketId)
         {
-           bool result = await _basketRepository.DeleteBasketAsync(id);
+           bool result = await _basketRepository.DeleteBasketAsync(basketId);
 
             if (result) return Ok(new ApiResponse(200,"Basket successfully deleted!"));
+
+            return GetBadRequest();
+        }
+        [HttpGet("basketItem")]
+        public async Task<IActionResult> DeleteBasketItemAsync(string basketId,int id)
+        {
+            bool result = await _basketRepository.DeleteBasketItemAsync(basketId,id);
+
+            if (result) return Ok(new ApiResponse(200, "Basket successfully deleted!"));
 
             return GetBadRequest();
         }

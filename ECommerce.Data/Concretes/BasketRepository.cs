@@ -24,6 +24,14 @@ namespace ECommerce.Data.Concretes
             return await _database.KeyDeleteAsync(basketId);
         }
 
+        public async Task<bool> DeleteBasketItemAsync(string basketId,int id)
+        {
+            Basket basket = await GetBasketAsync(basketId);
+            BasketItem bi = basket.items.Where(p => p.id == id).FirstOrDefault();
+            string serializedBi = JsonSerializer.Serialize(bi);
+            return await _database.SetRemoveAsync(basketId, serializedBi);
+        }
+
         public async Task<Basket> GetBasketAsync(string basketId)
         {
             var data = await _database.StringGetAsync(basketId);
