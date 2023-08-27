@@ -28,8 +28,9 @@ namespace ECommerce.Data.Concretes
         {
             Basket basket = await GetBasketAsync(basketId);
             BasketItem bi = basket.items.Where(p => p.id == id).FirstOrDefault();
-            string serializedBi = JsonSerializer.Serialize(bi);
-            return await _database.SetRemoveAsync(basketId, serializedBi);
+            basket.items.Remove(bi);
+            return await _database.StringSetAsync(basketId, JsonSerializer.Serialize(basket), TimeSpan.FromDays(30));
+  
         }
 
         public async Task<Basket> GetBasketAsync(string basketId)
@@ -41,8 +42,8 @@ namespace ECommerce.Data.Concretes
 
         public async Task<Basket> UpdateBasketAsync(Basket basket)
         {
-            var created = await _database.StringSetAsync(basket.id, 
-                JsonSerializer.Serialize(basket),TimeSpan.FromDays(30));
+            var created = await _database.StringSetAsync(basket.id,
+                JsonSerializer.Serialize(basket), TimeSpan.FromDays(30));
 
             if (!created) return null;
 

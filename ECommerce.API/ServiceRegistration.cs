@@ -5,6 +5,7 @@ using ECommerce.Data.Extensions;
 using ECommerce.Data.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
 namespace ECommerce.API
@@ -14,8 +15,8 @@ namespace ECommerce.API
         public static void AddApiServices(this IServiceCollection services,ConfigurationManager config)
         {
 
+            string str = config.GetValue<string>("SqlProvider");
 
-            
              services.AddControllers()
             .AddJsonOptions(options =>
                 {
@@ -23,7 +24,16 @@ namespace ECommerce.API
                 });
             services.AddDbContext<StoreContext>(opt =>
             {
-                opt.UseSqlServer(AppSettingsExtension.GetConnectionString("MSSQL"));
+                switch (config.GetValue<string>("SqlProvider"))
+                {
+                    case "SqlServer":
+                        opt.UseSqlServer(config.GetConnectionString("SqlServer"), config =>
+                        {
+                            config.MigrationsAssembly("ECommerce.Data");
+                        });
+                        break;
+                }
+                //opt.UseSqlServer(AppSettingsExtension.GetConnectionString("MSSQL"));
             });
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
@@ -46,7 +56,8 @@ namespace ECommerce.API
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
-
+            services.AddAuthentication();
+            services.AddAuthorization();
         }
     }
 }

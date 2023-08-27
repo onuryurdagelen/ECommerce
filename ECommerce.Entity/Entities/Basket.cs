@@ -23,4 +23,5 @@ namespace ECommerce.Entity.Entities
         public string id { get; set; }
         public List<BasketItem> items { get; set; } = new List<BasketItem>();
     }
+    
 }
