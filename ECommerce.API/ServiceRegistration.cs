@@ -15,8 +15,6 @@ namespace ECommerce.API
         public static void AddApiServices(this IServiceCollection services,ConfigurationManager config)
         {
 
-            string str = config.GetValue<string>("SqlProvider");
-
              services.AddControllers()
             .AddJsonOptions(options =>
                 {

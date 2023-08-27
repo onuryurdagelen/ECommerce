@@ -69,7 +69,7 @@ try
 {
     //await context.Database.MigrateAsync();
     await StoreContextSeed.SeedAsync(context);
-    await AppIdentityDbContextSeed.SeedUserAsync(userManager, identityContext);
+    await AppIdentityDbContextSeed.SeedUserAsync(userManager);
 }
 catch (Exception ex)
 {

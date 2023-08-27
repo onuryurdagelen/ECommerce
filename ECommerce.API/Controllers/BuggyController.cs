@@ -10,28 +10,28 @@ namespace ECommerce.API.Controllers
     public class BuggyController : BaseApiController
     {
         [HttpGet("notFound")]
-        public IActionResult GetNotFoundRequest()
+        public ActionResult GetNotFoundRequest()
         {
             return NotFound(new ApiResponse(404));
         }
         [HttpGet("serverError")]
 
-        public IActionResult GetServerError()
+        public ActionResult GetServerError()
         {
             throw new Exception("This is a server error");
         }
         [HttpGet("badRequest")]
-        public IActionResult GetBadRequest()
+        public ActionResult GetBadRequest()
         {
             return BadRequest(new ApiResponse(400));
         }
         [HttpGet("badRequest/{id}")]
-        public IActionResult GetBadRequest(int id)
+        public ActionResult GetBadRequest(int id)
         {
             return BadRequest(new ApiResponse(400));
         }
         [HttpGet("unAuthorized")]
-        public IActionResult GetUnAuthorizedErrorRequest()
+        public ActionResult GetUnAuthorizedErrorRequest()
         {
             return Unauthorized(new ApiResponse(401));
         }

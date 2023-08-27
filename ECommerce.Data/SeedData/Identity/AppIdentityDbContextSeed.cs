@@ -11,7 +11,7 @@ namespace ECommerce.Data.SeedData.Identity
 {
     public static class AppIdentityDbContextSeed
     {
-        public static async Task SeedUserAsync(UserManager<AppUser> userManager,AppIdentityDbContext appIdentityContext)
+        public static async Task SeedUserAsync(UserManager<AppUser> userManager)
         {
             //Check If there's no users already created
             if(!userManager.Users.Any()) 
