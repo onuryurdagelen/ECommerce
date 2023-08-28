@@ -1,5 +1,6 @@
 ﻿using ECommerce.Data.Exceptions;
 using ECommerce.Data.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,15 @@ namespace ECommerce.API.Controllers
     [ApiController]
     public class BuggyController : BaseApiController
     {
+
+        [HttpGet("testauth")]
+        [Authorize]
+        public ActionResult<string> GetSecretText()
+        {
+            return "secret stuff";
+        }
+
+
         [HttpGet("notFound")]
         public ActionResult GetNotFoundRequest()
         {
@@ -21,9 +31,9 @@ namespace ECommerce.API.Controllers
             throw new Exception("This is a server error");
         }
         [HttpGet("badRequest")]
-        public ActionResult GetBadRequest()
+        public ActionResult GetBadRequest(string message = null)
         {
-            return BadRequest(new ApiResponse(400));
+            return BadRequest(new ApiResponse(400, message));
         }
         [HttpGet("badRequest/{id}")]
         public ActionResult GetBadRequest(int id)

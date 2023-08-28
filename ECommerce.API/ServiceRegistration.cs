@@ -3,10 +3,13 @@ using ECommerce.Data.Concretes;
 using ECommerce.Data.Data;
 using ECommerce.Data.Extensions;
 using ECommerce.Data.Response;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 
 namespace ECommerce.API
 {
@@ -54,7 +57,19 @@ namespace ECommerce.API
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
-            services.AddAuthentication();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
+                        ValidIssuer = config["Token:Issuer"],
+                        ValidateIssuer = true,
+                        ValidAudience = config["Token:Audience"],
+                        ValidateAudience = true,
+                    };
+                });
             services.AddAuthorization();
         }
     }
