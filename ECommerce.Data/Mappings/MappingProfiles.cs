@@ -2,6 +2,7 @@
 using ECommerce.API.Entities;
 using ECommerce.Data.Dtos;
 using ECommerce.Data.Helpers;
+using ECommerce.Entity.Entities;
 using ECommerce.Entity.Entities.Identity;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Data.Mappings
 {
-    public class MappingProfiles:Profile
+    public class MappingProfiles : Profile
     {
         public MappingProfiles()
         {
@@ -22,12 +23,14 @@ namespace ECommerce.Data.Mappings
 
             CreateMap<Address, AddressDto>()
                 .ReverseMap();
-                //.ForMember(d => d.LastName, o => o.MapFrom(s => s.LastName))
-                //.ForMember(d => d.FirstName, o => o.MapFrom(s => s.FirstName))
-                //.ForMember(d => d.State, o => o.MapFrom(s => s.State))
-                //.ForMember(d => d.Street, o => o.MapFrom(s => s.Street))
-                //.ForMember(d => d.City, o => o.MapFrom(s => s.City))
-                //.ForMember(d => d.ZipCode, o => o.MapFrom(s => s.ZipCode));
+            CreateMap<BasketDto,Basket>();
+            CreateMap<BasketItemDto,BasketItem>();
+            //.ForMember(d => d.LastName, o => o.MapFrom(s => s.LastName))
+            //.ForMember(d => d.FirstName, o => o.MapFrom(s => s.FirstName))
+            //.ForMember(d => d.State, o => o.MapFrom(s => s.State))
+            //.ForMember(d => d.Street, o => o.MapFrom(s => s.Street))
+            //.ForMember(d => d.City, o => o.MapFrom(s => s.City))
+            //.ForMember(d => d.ZipCode, o => o.MapFrom(s => s.ZipCode));
 
             //Custom value resolver
         }

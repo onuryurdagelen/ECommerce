@@ -1,4 +1,5 @@
-﻿using ECommerce.Entity.Entities;
+﻿using ECommerce.Data.Dtos;
+using ECommerce.Entity.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

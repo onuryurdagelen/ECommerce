@@ -1,4 +1,6 @@
-﻿using ECommerce.Data.Abstracts;
+﻿using AutoMapper;
+using ECommerce.Data.Abstracts;
+using ECommerce.Data.Dtos;
 using ECommerce.Data.Response;
 using ECommerce.Entity.Entities;
 using Microsoft.AspNetCore.Http;
@@ -11,22 +13,25 @@ namespace ECommerce.API.Controllers
     public class BasketController : BuggyController
     {
         private readonly IBasketRepository _basketRepository;
+        private readonly IMapper _mapper;
 
-        public BasketController(IBasketRepository basketRepository)
+        public BasketController(IBasketRepository basketRepository, IMapper mapper)
         {
             _basketRepository = basketRepository;
+            _mapper = mapper;
         }
         [HttpGet]
         public async Task<IActionResult> GetBasketById(string id)
         {
-            var basket = await _basketRepository.GetBasketAsync(id);
+            Basket? basket = await _basketRepository.GetBasketAsync(id);
 
             return Ok(basket ?? new Entity.Entities.Basket(id));
         }
         [HttpPost]
-        public async Task<ActionResult<Basket>> UpdateBasket([FromBody]Basket basket)
+        public async Task<ActionResult<Basket>> UpdateBasket([FromBody]BasketDto basketDto)
         {
-            var updatedBasket = await _basketRepository.UpdateBasketAsync(basket);
+            Basket basket = _mapper.Map<BasketDto, Basket>(basketDto);
+            Basket updatedBasket = await _basketRepository.UpdateBasketAsync(basket);
 
             return Ok(updatedBasket);
         }
@@ -44,7 +49,9 @@ namespace ECommerce.API.Controllers
         {
             bool result = await _basketRepository.DeleteBasketItemAsync(basketId,id);
 
-            if (result) return Ok(new ApiResponse(200, "Basket item successfully deleted!", await _basketRepository.GetBasketAsync(basketId)));
+            BasketDto basketDto = _mapper.Map<Basket, BasketDto>(await _basketRepository.GetBasketAsync(basketId));
+
+            if (result) return Ok(new ApiResponse<BasketDto>(true, "Basket item successfully deleted!", basketDto));
 
             return GetBadRequest();
         }

@@ -2,6 +2,7 @@
 using ECommerce.Data.Abstracts;
 using ECommerce.Data.Dtos;
 using ECommerce.Data.Extensions;
+using ECommerce.Data.Response;
 using ECommerce.Entity.Entities.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,7 @@ namespace ECommerce.API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser()
         {
             //first way
             string email = HttpContext.User?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?
@@ -42,43 +43,46 @@ namespace ECommerce.API.Controllers
             //second way
             //string email = User.FindFirstValue(ClaimTypes.Email);
 
-            return new UserDto
+            UserDto userDto = new UserDto
             {
-                DisplayName = user.DisplayName,
+                Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                Email = user.Email
+                DisplayName = user.DisplayName
             };
+
+            return Ok(new ApiResponse<UserDto>(true, "success", userDto));
         }
         [Authorize]
         [HttpGet("address")]
-        public async Task<ActionResult<AddressDto>> GetUserAddress()
+        public async Task<IActionResult> GetUserAddress()
         {
             AppUser user = await _userManager.FindByUserClaimsPrincipleWithAddress(User);
 
-            return _mapper.Map<Address,AddressDto>(user.Address);
+            return Ok(new ApiResponse<AddressDto>(true, "success", _mapper.Map<Address, AddressDto>(user.Address)));
         }
         [Authorize]
         [HttpPut("address")]
-        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
+        public async Task<IActionResult> UpdateUserAddress(AddressDto address)
         {
             AppUser user = await _userManager.FindByUserClaimsPrincipleWithAddress(HttpContext.User);
             user.Address = _mapper.Map<AddressDto,Address>(address);
 
             IdentityResult result = await _userManager.UpdateAsync(user);
 
-            if (result.Succeeded) return Ok(_mapper.Map<Address, AddressDto>(user.Address));
+            if (result.Succeeded) 
+                return Ok(new ApiResponse<AddressDto>( true,"success", _mapper.Map<Address,AddressDto>(user.Address)));
 
             return GetBadRequest("Problem updating the user");
         }
 
         [HttpGet("emailexists")]
-        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromQuery] string email)
+        public async Task<bool> CheckEmailExistsAsync([FromQuery] string email)
         {
             return await _userManager.FindByEmailAsync(email) != null;
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login(LoginDto loginDto)
         {
             //check user has existed in database
 
@@ -90,17 +94,27 @@ namespace ECommerce.API.Controllers
 
             if(!result.Succeeded) return GetUnAuthorizedErrorRequest();
 
-            return new UserDto
+            UserDto userDto = new UserDto
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };
 
+            return Ok(new ApiResponse<UserDto>(true, "success", userDto));
+
         }
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
+            if(CheckEmailExistsAsync(registerDto.Email).Result)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[] {"Email Address is in use"}
+                });
+            }
+
             var user = new AppUser
             {
                 Email = registerDto.Email,
@@ -113,12 +127,14 @@ namespace ECommerce.API.Controllers
 
             if (!result.Succeeded) return GetBadRequest();
 
-            return new UserDto
+            UserDto userDto = new UserDto
             {
-                DisplayName = user.DisplayName,
+                Email = user.Email,
                 Token = _tokenService.CreateToken(user),
-                Email = user.Email
+                DisplayName = user.DisplayName
             };
+
+            return Ok(new ApiResponse<UserDto>(true, "success", userDto));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,15 +9,13 @@ namespace ECommerce.Data.Response
 {
     public class ApiResponse
     {
-        public ApiResponse(int statusCode,string message = null, object data = null)
+        public ApiResponse(int statusCode,string message = null)
         {
             StatusCode = statusCode;
             Message = message ?? GetDefaultMessageForStatusCode(statusCode);
-            Data = data;
         }
 
         public int StatusCode { get; set; }
-        public object Data { get; set; }
         public string Message { get; set; }
 
         private string GetDefaultMessageForStatusCode(int statusCode)
@@ -30,6 +29,22 @@ namespace ECommerce.Data.Response
                 _ => null
             };
         }
+
+    }
+
+    public class ApiResponse<T>
+    {
+        public bool Success { get; set; }
+        public T Data { get; set; }
+        public string Message { get; set; }
+
+        public ApiResponse(bool success, string message = null, T data = default)
+        {
+            Success = success;
+            Message = message;
+            Data = data;
+        }
+        
 
     }
 }

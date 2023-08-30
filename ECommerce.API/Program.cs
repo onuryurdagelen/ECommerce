@@ -1,4 +1,5 @@
 ﻿using ECommerce.API;
+using ECommerce.API.Extensions;
 using ECommerce.Data;
 using ECommerce.Data.Data;
 using ECommerce.Data.Data.Identity;
@@ -17,9 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerDocumentation();
 
 //Implementation Service Registrations
 builder.Services.AddDataServices();
@@ -47,8 +46,7 @@ app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerDocumentation();
 }
 
 app.UseHttpsRedirection();

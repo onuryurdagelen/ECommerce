@@ -17,8 +17,9 @@ namespace ECommerce.API
     {
         public static void AddApiServices(this IServiceCollection services,ConfigurationManager config)
         {
-
-             services.AddControllers()
+            string aud = config["Token:Audience"];
+            string iss = config["Token:Issuer"];
+            services.AddControllers()
             .AddJsonOptions(options =>
                 {
                   options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
@@ -50,7 +51,7 @@ namespace ECommerce.API
                                         .SelectMany(x => x.Value.Errors)
                                         .Select(x => x.ErrorMessage).ToArray();
 
-                    var errorResponse = new ApiValidationErrorResponse
+                    ApiValidationErrorResponse errorResponse = new ApiValidationErrorResponse
                     {
                         Errors = errors
                     };
@@ -66,8 +67,9 @@ namespace ECommerce.API
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Token:Key"])),
                         ValidIssuer = config["Token:Issuer"],
                         ValidateIssuer = true,
-                        ValidAudience = config["Token:Audience"],
-                        ValidateAudience = true,
+                        ValidateAudience = false,
+                        ValidAudience = "Public",
+                        //ValidAudience = config["Token:Audience"],
                     };
                 });
             services.AddAuthorization();
