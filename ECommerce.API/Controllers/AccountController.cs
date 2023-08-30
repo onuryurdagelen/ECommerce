@@ -47,6 +47,7 @@ namespace ECommerce.API.Controllers
             {
                 Email = user.Email,
                 Token = _tokenService.CreateToken(user),
+                PictureUrl = user.ProfileImageUrl,
                 DisplayName = user.DisplayName
             };
 
@@ -97,6 +98,7 @@ namespace ECommerce.API.Controllers
             UserDto userDto = new UserDto
             {
                 Email = user.Email,
+                PictureUrl = user.ProfileImageUrl,
                 Token = _tokenService.CreateToken(user),
                 DisplayName = user.DisplayName
             };

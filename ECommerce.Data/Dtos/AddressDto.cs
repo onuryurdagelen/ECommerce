@@ -9,7 +9,7 @@ namespace ECommerce.Data.Dtos
 {
     public class AddressDto
     {
-        [Required()]
+        [Required]
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
