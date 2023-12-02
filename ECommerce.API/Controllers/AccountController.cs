@@ -76,10 +76,17 @@ namespace ECommerce.API.Controllers
             return GetBadRequest("Problem updating the user");
         }
 
-        [HttpGet("emailexists")]
-        public async Task<bool> CheckEmailExistsAsync([FromQuery] string email)
+        [HttpGet("emailExists")]
+        public async Task<IActionResult> CheckEmailExistsAsync([FromQuery] string email)
         {
-            return await _userManager.FindByEmailAsync(email) != null;
+            if (await _userManager.FindByEmailAsync(email) is not null)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[] { "Email Address is in use" }
+                });
+            }
+            return Ok();
         }
 
         [HttpPost("login")]
@@ -109,14 +116,7 @@ namespace ECommerce.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            if(CheckEmailExistsAsync(registerDto.Email).Result)
-            {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse
-                {
-                    Errors = new[] {"Email Address is in use"}
-                });
-            }
-
+           
             var user = new AppUser
             {
                 Email = registerDto.Email,
